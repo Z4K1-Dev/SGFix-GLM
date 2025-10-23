@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,20 +7,271 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Kategori {
   id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
+  nama      String   @unique
+  deskripsi String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  berita    Berita[]
+
+  @@index([nama])
+  @@index([createdAt])
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Berita {
+  id         String       @id @default(cuid())
+  judul      String
+  isi        String
+  gambar     String?
+  kategoriId String
+  published  Boolean      @default(false)
+  author     String?
+  views      Int          @default(0)
+  likes      Int          @default(0)
+  comments   Int          @default(0)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  kategori   Kategori     @relation(fields: [kategoriId], references: [id], onDelete: Cascade)
+  notifikasi Notifikasi[]
+
+  @@index([published])
+  @@index([kategoriId])
+  @@index([createdAt])
+  @@index([published, createdAt])
+  @@index([kategoriId, published])
+  @@index([views])
+  @@index([likes])
+}
+
+model Pengaduan {
+  id         String       @id @default(cuid())
+  judul      String
+  keterangan String
+  foto       String?
+  latitude   Float?
+  longitude  Float?
+  status     Status       @default(BARU)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  balasan    Balasan[]
+  notifikasi Notifikasi[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([status, createdAt])
+  @@index([latitude, longitude])
+}
+
+model Balasan {
+  id           String       @id @default(cuid())
+  pengaduanId  String
+  isi          String
+  dariAdmin    Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  pengaduan    Pengaduan    @relation(fields: [pengaduanId], references: [id], onDelete: Cascade)
+  notifikasi   Notifikasi[]
+
+  @@index([pengaduanId])
+  @@index([createdAt])
+  @@index([dariAdmin])
+  @@index([pengaduanId, createdAt])
+}
+
+model Notifikasi {
+  id           String    @id @default(cuid())
+  judul        String
+  pesan        String
+  tipe         TipeNotif
+  untukAdmin   Boolean   @default(false)
+  dibaca       Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  beritaId     String?
+  pengaduanId  String?
+  layananId    String?
+  balasanId    String?
+  produkId     String?
+  balasan      Balasan?  @relation(fields: [balasanId], references: [id], onDelete: Cascade)
+  pengaduan    Pengaduan?  @relation(fields: [pengaduanId], references: [id], onDelete: Cascade)
+  berita       Berita?   @relation(fields: [beritaId], references: [id], onDelete: Cascade)
+  layanan      Layanan?  @relation(fields: [layananId], references: [id], onDelete: Cascade)
+  produk       Produk?   @relation(fields: [produkId], references: [id], onDelete: Cascade)
+
+  @@index([untukAdmin])
+  @@index([dibaca])
+  @@index([tipe])
+  @@index([createdAt])
+  @@index([untukAdmin, dibaca])
+  @@index([beritaId])
+  @@index([pengaduanId])
+  @@index([layananId])
+  @@index([balasanId])
+  @@index([produkId])
+}
+
+model Layanan {
+  id             String         @id @default(cuid())
+  judul          String
+  jenisLayanan   JenisLayanan
+  namaLengkap    String
+  nik            String
+  tempatLahir    String
+  tanggalLahir   DateTime
+  jenisKelamin   JenisKelamin
+  alamat         String
+  rt             String?
+  rw             String?
+  kelurahan      String?
+  kecamatan      String?
+  kabupaten      String?
+  provinsi       String?
+  kodePos        String?
+  telepon        String?
+  email          String?
+  status         StatusLayanan  @default(DITERIMA)
+  dokumen        String?        // JSON string untuk multiple documents
+  formData        String?        // JSON string untuk multi-step form data
+  keterangan     String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  balasan        BalasanLayanan[]
+  notifikasi     Notifikasi[]
+
+  @@index([jenisLayanan])
+  @@index([status])
+  @@index([createdAt])
+  @@index([status, createdAt])
+  @@index([nik])
+}
+
+model BalasanLayanan {
+  id         String       @id @default(cuid())
+  layananId  String
+  isi        String
+  dariAdmin  Boolean      @default(false)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  layanan    Layanan      @relation(fields: [layananId], references: [id], onDelete: Cascade)
+
+  @@index([layananId])
+  @@index([createdAt])
+  @@index([dariAdmin])
+  @@index([layananId, createdAt])
+}
+
+model KategoriProduk {
+  id          String   @id @default(cuid())
+  nama        String   @unique
+  deskripsi   String?
+  icon        String?  // Optional icon URL
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  produk      Produk[]
+  
+  @@index([nama])
+  @@index([createdAt])
+}
+
+model Produk {
+  id           String        @id @default(cuid())
+  judul        String
+  deskripsi    String
+  harga        Float
+  stok         Int           @default(0)
+  kategoriId   String
+  gambar       String?       // JSON string array image URLs (max 5)
+  status       StatusProduk  @default(PENDING)
+  dariAdmin    Boolean       @default(false)
+  views        Int           @default(0) // Page view counter
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  kategori     KategoriProduk @relation(fields: [kategoriId], references: [id])
+  notifikasi   Notifikasi[]
+  
+  // Optimized indexes for better query performance
+  @@index([kategoriId])
+  @@index([status])
+  @@index([dariAdmin])
+  @@index([createdAt])
+  @@index([views])
+  @@index([harga])
+  @@index([status, createdAt])
+  @@index([kategoriId, status])
+  @@index([status, createdAt, kategoriId])
+  @@index([judul], map: "idx_produk_judul_text") // For search optimization
+}
+
+enum Status {
+  BARU
+  DITAMPUNG
+  DITERUSKAN
+  DIKERJAKAN
+  SELESAI
+}
+
+enum StatusLayanan {
+  DITERIMA
+  DIPROSES
+  DIVERIFIKASI
+  SELESAI
+  DITOLAK
+}
+
+enum JenisLayanan {
+  KTP_EL
+  KTP_BARU
+  KTP_HILANG
+  KTP_RUSAK
+  AKTA_KELAHIRAN
+  AKTA_KEMATIAN
+  AKTA_PERKAWINAN
+  AKTA_CERAI
+  SURAT_PINDAH
+  SURAT_KEHILANGAN
+  SURAT_KETERANGAN
+  KK_BARU
+  KK_PERUBAHAN
+  KK_HILANG
+  IMB
+  SIUP
+  SKDU
+}
+
+enum JenisKelamin {
+  LAKI_LAKI
+  PEREMPUAN
+}
+
+// Untuk backward compatibility
+enum JenisKelaminAlias {
+  L
+  P
+}
+
+enum TipeNotif {
+  BERITA_BARU
+  BERITA_UPDATE
+  PENGADUAN_BARU
+  PENGADUAN_UPDATE
+  PENGADUAN_BALASAN
+  LAYANAN_BARU
+  LAYANAN_UPDATE
+  LAYANAN_BALASAN
+  INFO
+  BARU
+  UPDATE
+  PRODUK_PENGGUNAJUAN_BARU
+  PRODUK_PENGGUNAJUAN_DITERIMA
+  PRODUK_PENGGUNAJUAN_DITOLAK
+  PRODUK_BARU_ADMIN
+}
+
+enum StatusProduk {
+  DRAFT        // Draft admin (belum tersedia)
+  PENDING      // Pending review dari user submission
+  APPROVED     // Approved dan aktif di marketplace
+  REJECTED     // Rejected oleh admin
+  ACTIVE       // Aktif di marketplace
+  INACTIVE     // Non-aktif (dihapus admin)
 }
