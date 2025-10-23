@@ -125,7 +125,7 @@ export default function BeritaPage() {
                 </div>
                 
                 {/* Konten di bawah gambar dengan padding */}
-                <div className="px-6 pb-6 pt-4">
+                <div className="px-6 pb-6 pt-0">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary" className="text-xs">
