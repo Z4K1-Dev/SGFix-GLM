@@ -3,10 +3,23 @@
 // Inspired by react-hot-toast library
 import * as React from "react"
 
+<<<<<<< HEAD
 import type {
   ToastActionElement,
   ToastProps,
 } from "@/components/ui/toast"
+=======
+// Locally defined types to decouple from UI implementation
+// and remain compatible with existing toast({ title, description, variant }) calls.
+// Do not import from the UI toast module to avoid circular type dependencies.
+type ToastActionElement = React.ReactNode
+
+type ToastProps = {
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  variant?: "default" | "destructive"
+}
+>>>>>>> d4b6760bb73a642c3315a423166c99fc96e752eb
 
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
@@ -18,7 +31,10 @@ type ToasterToast = ToastProps & {
   action?: ToastActionElement
 }
 
+<<<<<<< HEAD
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+=======
+>>>>>>> d4b6760bb73a642c3315a423166c99fc96e752eb
 const actionTypes = {
   ADD_TOAST: "ADD_TOAST",
   UPDATE_TOAST: "UPDATE_TOAST",
@@ -192,4 +208,8 @@ function useToast() {
   }
 }
 
+<<<<<<< HEAD
 export { useToast, toast }
+=======
+export { toast, useToast }
+>>>>>>> d4b6760bb73a642c3315a423166c99fc96e752eb

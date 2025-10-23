@@ -1,10 +1,18 @@
 "use client"
 
+<<<<<<< HEAD
 import * as React from "react"
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
+=======
+import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
+import * as React from "react"
+
+import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+>>>>>>> d4b6760bb73a642c3315a423166c99fc96e752eb
 
 function AlertDialog({
   ...props
@@ -143,6 +151,7 @@ function AlertDialogCancel({
 }
 
 export {
+<<<<<<< HEAD
   AlertDialog,
   AlertDialogPortal,
   AlertDialogOverlay,
@@ -155,3 +164,9 @@ export {
   AlertDialogAction,
   AlertDialogCancel,
 }
+=======
+  AlertDialog, AlertDialogAction,
+  AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger
+}
+
+>>>>>>> d4b6760bb73a642c3315a423166c99fc96e752eb
