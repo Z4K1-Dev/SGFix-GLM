@@ -99,34 +99,34 @@ export default function BeritaPage() {
         {berita.map((item) => (
           <Card
             key={item.id}
-            className="shadow-sm bg-card active:shadow-none transition-all duration-200 cursor-pointer"
+            className={`shadow-sm bg-card active:shadow-none transition-all duration-200 cursor-pointer ${
+              item.gambar ? 'p-0' : ''
+            }`}
             onClick={() => router.push(`/berita/${item.id}`)}
           >
             {item.gambar ? (
-              // Card dengan gambar - gambar 90% width, konten di bawahnya
+              // Card dengan gambar full width
               <>
-                {/* Gambar 90% width dengan judul overlay */}
-                <div className="flex justify-center pt-4">
-                  <div className="relative w-[90%] h-48">
-                    <img
-                      src={`/${item.gambar}`}
-                      alt={item.judul}
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                    {/* Overlay gradient seperti slider di home */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-lg"></div>
-                    {/* Judul di bawah overlay seperti slider */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <h3 className="text-white font-semibold text-lg line-clamp-3">
-                        {item.judul}
-                      </h3>
-                    </div>
+                {/* Gambar full width dari atas card */}
+                <div className="relative w-full h-48 rounded-t-lg overflow-hidden">
+                  <img
+                    src={`/${item.gambar}`}
+                    alt={item.judul}
+                    className="w-full h-full object-cover"
+                  />
+                  {/* Overlay gradient seperti slider di home */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                  {/* Judul di bawah overlay seperti slider */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
+                    <h3 className="text-white font-semibold text-lg line-clamp-3">
+                      {item.judul}
+                    </h3>
                   </div>
                 </div>
                 
-                {/* Konten di bawah gambar */}
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
+                {/* Konten di bawah gambar dengan padding */}
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary" className="text-xs">
                         {item.kategori.nama}
@@ -146,8 +146,6 @@ export default function BeritaPage() {
                       </div>
                     )}
                   </div>
-                </CardHeader>
-                <CardContent>
                   <p className="text-sm text-muted-foreground line-clamp-3 mb-3">{item.isi}</p>
                   <Button
                     variant="outline"
@@ -160,7 +158,7 @@ export default function BeritaPage() {
                   >
                     Baca Selengkapnya
                   </Button>
-                </CardContent>
+                </div>
               </>
             ) : (
               // Card tanpa gambar - layout standard
